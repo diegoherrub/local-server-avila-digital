@@ -1,5 +1,6 @@
 package com.example.plugins
 
+import com.example.models.movies.MovieManagement
 import com.example.models.pharmacies.PharmacyManagement
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
@@ -21,6 +22,21 @@ fun Application.configureRouting() {
                 call.respondText("No se han encontrado farmacias para el mes $month")
             } else {
                 call.respond(pharmacies)
+            }
+        }
+
+        get("/movies"){
+            val movies = MovieManagement().getAllMovies()
+            call.respond(movies)
+        }
+
+        get("/movies/{id}") {
+            val id = call.parameters["id"]
+            val movie = id?.let { MovieManagement().getMovieById(it) }
+            if (movie != null){
+                call.respond(movie)
+            } else {
+                call.respondText("Movies not found")
             }
         }
     }
